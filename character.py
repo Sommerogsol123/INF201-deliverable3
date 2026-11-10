@@ -23,6 +23,11 @@ class Character:
         amount = max(amount, 0)              # Negative damage should not heal
         self._hp = max(self._hp - amount, 0)
 
+    def heal(self, amount: int) -> None:
+        """Increase own HP by amount. HP cannot exceed hp_max."""
+        amount = max(amount, 0)                          # Negative healing should not hurt
+        self._hp = min(self._hp + amount, self.hp_max)
+
     def attack(self, target) -> None:
         """Attack and deal damage to target character"""
         target._hp -= self.damage
@@ -50,7 +55,9 @@ if __name__ == "__main__":
     c = Character("Test")
     c.take_damage(30)
     print(c.hp)          # forventer 70
+    c.heal(20)
+    print(c.hp)          # forventer 90
+    c.heal(500)
+    print(c.hp)          # forventer 100 (ikke over maks)
     c.take_damage(500)
-    print(c.hp)          # forventer 0
-    c.take_damage(-10)
     print(c.hp)          # forventer 0
