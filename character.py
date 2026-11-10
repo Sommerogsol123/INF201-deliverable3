@@ -18,6 +18,11 @@ class Character:
         self.hp_max = hp_max
         self.damage = damage
 
+    def take_damage(self, amount: int) -> None:
+        """Reduce own HP by amount. HP cannot go below 0."""
+        amount = max(amount, 0)              # Negative damage should not heal
+        self._hp = max(self._hp - amount, 0)
+
     def attack(self, target) -> None:
         """Attack and deal damage to target character"""
         target._hp -= self.damage
@@ -29,7 +34,7 @@ class Character:
 
     def __repr__(self) -> str:
         """Representation of character object"""
-        return f"<Character name={self.name} hp={self.hp} damage={self.damage}>)"
+        return f"<Character name={self.name} hp={self.hp} damage={self.damage}>"
 
     def __str__(self) -> str:
         """String representation of character object"""
@@ -39,3 +44,13 @@ class Character:
     def hp(self) -> int:
         """Public read-only property to inspect HP without allowing direct, unsafe edits."""
         return self._hp
+
+
+if __name__ == "__main__":
+    c = Character("Test")
+    c.take_damage(30)
+    print(c.hp)          # forventer 70
+    c.take_damage(500)
+    print(c.hp)          # forventer 0
+    c.take_damage(-10)
+    print(c.hp)          # forventer 0
