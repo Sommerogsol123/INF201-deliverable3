@@ -29,9 +29,8 @@ class Character:
         self._hp = min(self._hp + amount, self.hp_max)
 
     def attack(self, target) -> None:
-        """Attack and deal damage to target character"""
-        target._hp -= self.damage
-        target._hp = max(target._hp, 0)  # Target hp cannot end up lower than 0
+        """Attack target. The target handles its own HP through take_damage()."""
+        target.take_damage(self.damage)
 
     def introduce(self) -> None:
         """Creates string that introduces character"""
@@ -50,14 +49,20 @@ class Character:
         """Public read-only property to inspect HP without allowing direct, unsafe edits."""
         return self._hp
 
+    @property
+    def is_alive(self) -> bool:
+        """Read-only property: True if the character has HP left, otherwise False."""
+        return self._hp > 0
+
 
 if __name__ == "__main__":
-    c = Character("Test")
-    c.take_damage(30)
-    print(c.hp)          # forventer 70
-    c.heal(20)
-    print(c.hp)          # forventer 90
-    c.heal(500)
-    print(c.hp)          # forventer 100 (ikke over maks)
-    c.take_damage(500)
-    print(c.hp)          # forventer 0
+    hero = Character("Hero")
+    enemy = Character("Enemy", hp_max=25)
+
+    hero.attack(enemy)
+    print(enemy.hp, enemy.is_alive)      # forventer 15 True
+    hero.attack(enemy)
+    print(enemy.hp, enemy.is_alive)      # forventer 5 True
+    hero.attack(enemy)
+    print(enemy.hp, enemy.is_alive)      # forventer 0 False
+    print(hero.hp, hero.is_alive)        # forventer 100 True
